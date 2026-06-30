@@ -1,10 +1,15 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import type { Task } from '../types';
-import { getTaskService } from '../services/serviceFactory';
+import type { Task, TaskFormValues } from '../types';
+import {
+  createTask as apiCreateTask,
+  updateTask as apiUpdateTask,
+  deleteTask as apiDeleteTask,
+  subscribeToUserTasks,
+} from '../services/firebase/firebaseTaskService';
 
 export const useTasks = (userId: string | undefined) => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filter & Search states
@@ -14,105 +19,93 @@ export const useTasks = (userId: string | undefined) => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'newest' | 'dueDateAsc' | 'dueDateDesc' | 'priorityHigh' | 'priorityLow'>('newest');
 
-  const taskService = getTaskService();
-
-  const fetchTasks = useCallback(async () => {
+  // Real-time listener
+  useEffect(() => {
     if (!userId) {
       setTasks([]);
+      setLoading(false);
       return;
     }
+
     setLoading(true);
     setError(null);
-    try {
-      const fetchedTasks = await taskService.getTasks(userId);
-      setTasks(fetchedTasks);
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : 'Error al obtener las tareas';
-      setError(errMsg);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, taskService]);
 
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
-
-  const addTask = async (taskData: Omit<Task, 'id' | 'createdAt' | 'userId' | 'status'>) => {
-    if (!userId) return;
-    setError(null);
-    try {
-      const newTask = await taskService.addTask(taskData, userId);
-      setTasks((prev) => [newTask, ...prev]);
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : 'Error al agregar la tarea';
-      setError(errMsg);
-      throw err;
-    }
-  };
-
-  const toggleTaskStatus = async (taskId: string) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
-    const newStatus = task.status === 'completed' ? 'pending' : 'completed';
-    
-    setError(null);
-    // Optimistic update
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
+    const unsubscribe = subscribeToUserTasks(
+      userId,
+      (fetchedTasks) => {
+        setTasks(fetchedTasks);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err.message || 'Error en la suscripción a Firestore');
+        setLoading(false);
+      }
     );
 
-    try {
-      await taskService.updateTask(taskId, { status: newStatus });
-    } catch (err: unknown) {
-      // Revert optimistic update on failure
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? { ...t, status: task.status } : t))
-      );
-      const errMsg = err instanceof Error ? err.message : 'Error al actualizar el estado de la tarea';
-      setError(errMsg);
-    }
-  };
+    return () => {
+      unsubscribe();
+    };
+  }, [userId]);
 
-  const updateTask = async (
-    taskId: string,
-    updates: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>
-  ) => {
-    setError(null);
-    const originalTasks = [...tasks];
-    
-    // Optimistic update
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
-    );
+  // Operations wrapped in try/catch to set/reset errors
+  const createTask = useCallback(
+    async (data: TaskFormValues) => {
+      if (!userId) return;
+      setError(null);
+      try {
+        await apiCreateTask(userId, data);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al crear la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    [userId]
+  );
 
-    try {
-      await taskService.updateTask(taskId, updates);
-    } catch (err: unknown) {
-      // Revert on failure
-      setTasks(originalTasks);
-      const errMsg = err instanceof Error ? err.message : 'Error al actualizar la tarea';
-      setError(errMsg);
-      throw err;
-    }
-  };
+  const updateTask = useCallback(
+    async (taskId: string, data: Partial<Task>) => {
+      setError(null);
+      try {
+        await apiUpdateTask(taskId, data);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al actualizar la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    []
+  );
 
-  const deleteTask = async (taskId: string) => {
-    setError(null);
-    const originalTasks = [...tasks];
+  const deleteTask = useCallback(
+    async (taskId: string) => {
+      setError(null);
+      try {
+        await apiDeleteTask(taskId);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al eliminar la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    []
+  );
 
-    // Optimistic update
-    setTasks((prev) => prev.filter((t) => t.id !== taskId));
-
-    try {
-      await taskService.deleteTask(taskId);
-    } catch (err: unknown) {
-      // Revert on failure
-      setTasks(originalTasks);
-      const errMsg = err instanceof Error ? err.message : 'Error al eliminar la tarea';
-      setError(errMsg);
-    }
-  };
+  const toggleTaskStatus = useCallback(
+    async (taskId: string) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+      const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+      setError(null);
+      try {
+        await apiUpdateTask(taskId, { status: newStatus });
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al actualizar la tarea';
+        setError(errMsg);
+      }
+    },
+    [tasks]
+  );
 
   const categories = useMemo(() => {
     const list = tasks.map((t) => t.category).filter(Boolean);
@@ -197,6 +190,13 @@ export const useTasks = (userId: string | undefined) => {
     allTasksCount: tasks.length,
     loading,
     error,
+    createTask,
+    updateTask,
+    deleteTask,
+
+    // UI and compatibility mappings
+    addTask: createTask,
+    toggleTaskStatus,
     categories,
     searchQuery,
     setSearchQuery,
@@ -208,11 +208,6 @@ export const useTasks = (userId: string | undefined) => {
     setCategoryFilter,
     sortBy,
     setSortBy,
-    addTask,
-    toggleTaskStatus,
-    updateTask,
-    deleteTask,
-    refreshTasks: fetchTasks,
     stats,
   };
 };

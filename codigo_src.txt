@@ -1,0 +1,3802 @@
+ESTRUCTURA DE ARCHIVOS DE LA CARPETA SRC:
+
+src
+├── App.css
+├── App.tsx
+├── assets
+│   ├── hero.png
+│   ├── react.svg
+│   └── vite.svg
+├── components
+│   ├── auth
+│   │   ├── LoginForm.tsx
+│   │   └── RegisterForm.tsx
+│   ├── layout
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   └── Layout.tsx
+│   ├── tasks
+│   │   ├── TaskFilters.tsx
+│   │   ├── TaskItem.tsx
+│   │   ├── TaskList.tsx
+│   │   ├── TaskStats.tsx
+│   │   ├── TodoForm.tsx
+│   │   └── __tests__
+│   │       └── TodoForm.test.tsx
+│   └── ui
+│       ├── Badge.tsx
+│       ├── Button.tsx
+│       ├── Card.tsx
+│       ├── Input.tsx
+│       ├── Modal.tsx
+│       └── Select.tsx
+├── context
+│   └── auth
+│       └── AuthContext.tsx
+├── features
+├── hooks
+│   ├── auth
+│   ├── tasks
+│   ├── useAuth.ts
+│   ├── useForm.ts
+│   └── useTasks.ts
+├── index.css
+├── main.tsx
+├── pages
+│   ├── auth
+│   │   ├── LoginPage.tsx
+│   │   └── RegisterPage.tsx
+│   ├── dashboard
+│   │   └── DashboardPage.tsx
+│   └── home
+│       └── HomePage.tsx
+├── routes
+│   └── AppRoutes.tsx
+├── services
+│   ├── api
+│   │   └── storageService.ts
+│   ├── firebase
+│   │   ├── authService.ts
+│   │   ├── config.ts
+│   │   ├── firebaseTaskService.ts
+│   │   └── taskService.ts
+│   └── serviceFactory.ts
+├── test
+│   └── setup.ts
+├── types
+│   └── index.ts
+└── utils
+
+================================================================================
+
+CONTENIDO DE LOS ARCHIVOS:
+
+// =========================================================================
+// ARCHIVO: src/App.css
+// =========================================================================
+
+/* Custom styling variables and resets */
+:root {
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-light: #ede9fe;
+  
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --success-dark: #065f46;
+  
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --warning-dark: #92400e;
+  
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --danger-dark: #991b1b;
+  
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+  
+  --bg-app: #f9fafb;
+  --bg-card: #ffffff;
+  --border-color: #e5e7eb;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-app: #0f172a;
+    --bg-card: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #64748b;
+    --primary-light: rgba(139, 92, 246, 0.15);
+    --success-light: rgba(16, 185, 129, 0.15);
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger-light: rgba(239, 68, 68, 0.15);
+    --info-light: rgba(59, 130, 246, 0.15);
+  }
+}
+
+/* App Layout Styles */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+}
+
+.app-main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+/* Navigation Header */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-header {
+    background-color: rgba(30, 41, 59, 0.8);
+  }
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--primary);
+  transition: transform 0.2s;
+}
+
+.brand-logo:hover {
+  transform: scale(1.02);
+}
+
+.brand-icon {
+  background-color: var(--primary);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.nav-link-active {
+  color: var(--primary);
+  background-color: var(--primary-light);
+  font-weight: 600;
+}
+
+.auth-status-container {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-welcome {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-link-login {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.btn-link-login:hover {
+  color: var(--primary);
+}
+
+/* Footer */
+.app-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 20px 0;
+  background-color: var(--bg-card);
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+.footer-credits {
+  font-size: 12px;
+}
+
+/* UI Atoms Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: var(--radius-md);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--text-tertiary);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--primary-light);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Card Atom */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.card-hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Badge Atom */
+.badge {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-primary {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.badge-secondary {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.badge-success {
+  background-color: var(--success-light);
+  color: var(--success-dark);
+}
+
+.badge-warning {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.badge-danger {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+.badge-info {
+  background-color: var(--info-light);
+  color: var(--info);
+}
+
+/* Forms and Inputs */
+.form-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.has-error .form-control,
+.has-error .form-select {
+  border-color: var(--danger);
+}
+
+.error-message {
+  display: block;
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-col {
+  flex: 1;
+}
+
+/* Alert States */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.alert-danger {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Modal Dialog */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: modalEnter 0.25s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close-btn {
+  font-size: 24px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+}
+
+/* Home / Landing Page */
+.home-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding: 40px 0;
+}
+
+.hero-section {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.hero-cta-container {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.features-section {
+  text-align: center;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.feature-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Auth Pages (Login / Register) */
+.auth-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn-auth-submit {
+  margin-top: 12px;
+}
+
+.auth-footer-link {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.auth-footer-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-footer-link a:hover {
+  text-decoration: underline;
+}
+
+/* Loading Screen state */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spinnerRun 0.8s linear infinite;
+}
+
+@keyframes spinnerRun {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dashboard Container Layout */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.dashboard-subtitle {
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* Dashboard Statistics Grid */
+.task-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  position: relative;
+}
+
+.stat-icon {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  background-color: var(--bg-app);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+}
+
+.stat-value {
+  margin: 2px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-progress-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-progress-bar {
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.stat-progress-bar-fill {
+  height: 100%;
+  background-color: var(--success);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.stat-progress-bar-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--success-dark);
+}
+
+.border-danger-alert {
+  border-color: rgba(239, 68, 68, 0.4);
+  background-color: rgba(239, 68, 68, 0.02);
+}
+
+/* Filters Panel */
+.task-filters-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filters-search-bar {
+  width: 100%;
+}
+
+.search-input {
+  margin-bottom: 0;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+.filter-select {
+  margin-bottom: 0;
+}
+
+.btn-group {
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.btn-filter {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-filter:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+
+.btn-filter:hover {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+}
+
+.btn-filter.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Task List and Items Layout */
+.task-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.section-title-small {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  padding: 16px;
+}
+
+.task-item-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  accent-color: var(--primary);
+  margin-top: 2px;
+}
+
+.task-item-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.task-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.task-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.task-completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.task-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.task-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.task-completed .task-description {
+  color: var(--text-tertiary);
+}
+
+.task-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.task-due-date {
+  font-weight: 500;
+}
+
+.overdue-warning {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.task-item-actions {
+  display: flex;
+  gap: 8px;
+  align-self: center;
+}
+
+@media (max-width: 768px) {
+  .task-item-layout {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .task-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.task-list-loading {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-secondary);
+}
+
+.task-list-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.task-list-empty h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.task-list-empty p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Colors helpers */
+.text-primary { color: var(--primary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+
+
+
+// =========================================================================
+// ARCHIVO: src/App.tsx
+// =========================================================================
+
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/auth/AuthContext';
+import { AppRoutes } from './routes/AppRoutes';
+import './App.css';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/auth/LoginForm.tsx
+// =========================================================================
+
+import React, { useState } from 'react';
+import { useForm } from '../../hooks/useForm';
+import { useAuth } from '../../hooks/useAuth';
+import { Input } from '../ui/Input';
+import { Button } from '../ui/Button';
+import type { LoginFormValues } from '../../types';
+
+interface LoginFormProps {
+  onSuccess: () => void;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
+  const { login } = useAuth();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const form = useForm<LoginFormValues>({
+    initialValues: { email: '', password: '' },
+    validate: (values) => {
+      const errors: Partial<Record<keyof LoginFormValues, string>> = {};
+      if (!values.email) {
+        errors.email = 'El correo electrónico es requerido';
+      } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+        errors.email = 'El formato del correo electrónico no es válido';
+      }
+      if (!values.password) {
+        errors.password = 'La contraseña es requerida';
+      } else if (values.password.length < 6) {
+        errors.password = 'La contraseña debe tener al menos 6 caracteres';
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      setSubmitError(null);
+      try {
+        await login(values);
+        onSuccess();
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al iniciar sesión';
+        setSubmitError(errMsg);
+      }
+    },
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit} className="auth-form">
+      {submitError && (
+        <div className="alert alert-danger" role="alert">
+          {submitError}
+        </div>
+      )}
+      
+      <Input
+        label="Correo Electrónico"
+        type="email"
+        name="email"
+        value={form.values.email}
+        onChange={form.handleChange}
+        error={form.errors.email}
+        placeholder="ejemplo@correo.com"
+        autoComplete="email"
+        required
+      />
+
+      <Input
+        label="Contraseña"
+        type="password"
+        name="password"
+        value={form.values.password}
+        onChange={form.handleChange}
+        error={form.errors.password}
+        placeholder="******"
+        autoComplete="current-password"
+        required
+      />
+
+      <Button
+        type="submit"
+        fullWidth
+        disabled={form.isSubmitting}
+        className="btn-auth-submit"
+      >
+        {form.isSubmitting ? 'Cargando...' : 'Iniciar Sesión'}
+      </Button>
+    </form>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/auth/RegisterForm.tsx
+// =========================================================================
+
+import React, { useState } from 'react';
+import { useForm } from '../../hooks/useForm';
+import { useAuth } from '../../hooks/useAuth';
+import { Input } from '../ui/Input';
+import { Button } from '../ui/Button';
+import type { RegisterFormValues } from '../../types';
+
+interface RegisterFormProps {
+  onSuccess: () => void;
+}
+
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
+  const { register } = useAuth();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const form = useForm<RegisterFormValues>({
+    initialValues: { displayName: '', email: '', password: '', confirmPassword: '' },
+    validate: (values) => {
+      const errors: Partial<Record<keyof RegisterFormValues, string>> = {};
+      if (!values.displayName) {
+        errors.displayName = 'El nombre es requerido';
+      }
+      if (!values.email) {
+        errors.email = 'El correo electrónico es requerido';
+      } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+        errors.email = 'El formato del correo electrónico no es válido';
+      }
+      if (!values.password) {
+        errors.password = 'La contraseña es requerida';
+      } else if (values.password.length < 6) {
+        errors.password = 'La contraseña debe tener al menos 6 caracteres';
+      }
+      if (values.password !== values.confirmPassword) {
+        errors.confirmPassword = 'Las contraseñas no coinciden';
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      setSubmitError(null);
+      try {
+        await register(values);
+        onSuccess();
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al registrar usuario';
+        setSubmitError(errMsg);
+      }
+    },
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit} className="auth-form">
+      {submitError && (
+        <div className="alert alert-danger" role="alert">
+          {submitError}
+        </div>
+      )}
+
+      <Input
+        label="Nombre"
+        type="text"
+        name="displayName"
+        value={form.values.displayName}
+        onChange={form.handleChange}
+        error={form.errors.displayName}
+        placeholder="Juan Pérez"
+        required
+      />
+      
+      <Input
+        label="Correo Electrónico"
+        type="email"
+        name="email"
+        value={form.values.email}
+        onChange={form.handleChange}
+        error={form.errors.email}
+        placeholder="ejemplo@correo.com"
+        autoComplete="email"
+        required
+      />
+
+      <Input
+        label="Contraseña"
+        type="password"
+        name="password"
+        value={form.values.password}
+        onChange={form.handleChange}
+        error={form.errors.password}
+        placeholder="******"
+        autoComplete="new-password"
+        required
+      />
+
+      <Input
+        label="Confirmar Contraseña"
+        type="password"
+        name="confirmPassword"
+        value={form.values.confirmPassword}
+        onChange={form.handleChange}
+        error={form.errors.confirmPassword}
+        placeholder="******"
+        autoComplete="new-password"
+        required
+      />
+
+      <Button
+        type="submit"
+        fullWidth
+        disabled={form.isSubmitting}
+        className="btn-auth-submit"
+      >
+        {form.isSubmitting ? 'Cargando...' : 'Crear Cuenta'}
+      </Button>
+    </form>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/layout/Footer.tsx
+// =========================================================================
+
+import React from 'react';
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="app-footer">
+      <div className="footer-content">
+        <p>&copy; {new Date().getFullYear()} GestorTareas. Todos los derechos reservados.</p>
+        <p className="footer-credits">
+          Desarrollado en React + TypeScript
+        </p>
+      </div>
+    </footer>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/layout/Header.tsx
+// =========================================================================
+
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { Button } from '../ui/Button';
+
+export const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  return (
+    <header className="app-header">
+      <div className="header-container">
+        <NavLink to="/" className="brand-logo">
+          <span className="brand-icon">✓</span>
+          <span className="brand-name">GestorTareas</span>
+        </NavLink>
+        
+        <nav className="nav-menu">
+          <NavLink
+            to="/"
+            className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+            end
+          >
+            Inicio
+          </NavLink>
+          {user && (
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+            >
+              Mis Tareas
+            </NavLink>
+          )}
+        </nav>
+
+        <div className="auth-status-container">
+          {user ? (
+            <div className="user-profile-menu">
+              <span className="user-welcome">
+                Hola, <strong>{user.displayName || user.email.split('@')[0]}</strong>
+              </span>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                Salir
+              </Button>
+            </div>
+          ) : (
+            <div className="auth-actions">
+              <NavLink to="/login" className="btn-link-login">
+                Ingresar
+              </NavLink>
+              <NavLink to="/register" className="btn btn-primary btn-sm">
+                Registrarse
+              </NavLink>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/layout/Layout.tsx
+// =========================================================================
+
+import React from 'react';
+import { Header } from './Header';
+import { Footer } from './Footer';
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
+  return (
+    <div className="app-layout">
+      <Header />
+      <main className="app-main-content">{children}</main>
+      <Footer />
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/TaskFilters.tsx
+// =========================================================================
+
+import React from 'react';
+import { Select } from '../ui/Select';
+import { Input } from '../ui/Input';
+
+interface TaskFiltersProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  statusFilter: 'all' | 'completed' | 'pending';
+  setStatusFilter: (status: 'all' | 'completed' | 'pending') => void;
+  priorityFilter: 'all' | 'low' | 'medium' | 'high';
+  setPriorityFilter: (priority: 'all' | 'low' | 'medium' | 'high') => void;
+  categoryFilter: string;
+  setCategoryFilter: (category: string) => void;
+  categories: string[];
+  sortBy: 'newest' | 'dueDateAsc' | 'dueDateDesc' | 'priorityHigh' | 'priorityLow';
+  setSortBy: (sort: 'newest' | 'dueDateAsc' | 'dueDateDesc' | 'priorityHigh' | 'priorityLow') => void;
+}
+
+export const TaskFilters: React.FC<TaskFiltersProps> = ({
+  searchQuery,
+  setSearchQuery,
+  statusFilter,
+  setStatusFilter,
+  priorityFilter,
+  setPriorityFilter,
+  categoryFilter,
+  setCategoryFilter,
+  categories,
+  sortBy,
+  setSortBy,
+}) => {
+  const priorityOptions = [
+    { value: 'all', label: 'Todas las prioridades' },
+    { value: 'low', label: 'Baja' },
+    { value: 'medium', label: 'Media' },
+    { value: 'high', label: 'Alta' },
+  ];
+
+  const sortOptions = [
+    { value: 'newest', label: 'Creado: más reciente' },
+    { value: 'dueDateAsc', label: 'Vencimiento: más cercano' },
+    { value: 'dueDateDesc', label: 'Vencimiento: más lejano' },
+    { value: 'priorityHigh', label: 'Prioridad: Alta → Baja' },
+    { value: 'priorityLow', label: 'Prioridad: Baja → Alta' },
+  ];
+
+  return (
+    <div className="task-filters-panel">
+      <div className="filters-search-bar">
+        <Input
+          type="text"
+          name="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Buscar por título o descripción..."
+          className="search-input"
+        />
+      </div>
+
+      <div className="filters-grid">
+        <div className="filter-group">
+          <label className="form-label">Estado</label>
+          <div className="btn-group">
+            <button
+              type="button"
+              className={`btn-filter ${statusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('all')}
+            >
+              Todos
+            </button>
+            <button
+              type="button"
+              className={`btn-filter ${statusFilter === 'pending' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('pending')}
+            >
+              Pendientes
+            </button>
+            <button
+              type="button"
+              className={`btn-filter ${statusFilter === 'completed' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('completed')}
+            >
+              Completadas
+            </button>
+          </div>
+        </div>
+
+        <Select
+          label="Prioridad"
+          name="priorityFilter"
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value as 'all' | 'low' | 'medium' | 'high')}
+          options={priorityOptions}
+          className="filter-select"
+        />
+
+        <Select
+          label="Categoría"
+          name="categoryFilter"
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          options={[
+            { value: 'all', label: 'Todas las categorías' },
+            ...categories
+              .filter((c) => c !== 'all')
+              .map((c) => ({ value: c, label: c })),
+          ]}
+          className="filter-select"
+        />
+
+        <Select
+          label="Ordenar por"
+          name="sortBy"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as 'newest' | 'dueDateAsc' | 'dueDateDesc' | 'priorityHigh' | 'priorityLow')}
+          options={sortOptions}
+          className="filter-select"
+        />
+      </div>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/TaskItem.tsx
+// =========================================================================
+
+import React, { useState } from 'react';
+import type { Task, TaskFormValues } from '../../types';
+import { Card } from '../ui/Card';
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
+import { TodoForm } from './TodoForm';
+
+interface TaskItemProps {
+  task: Task;
+  onToggleStatus: (id: string) => void;
+  onUpdate: (id: string, updates: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>) => Promise<void>;
+  onDelete: (id: string) => void;
+}
+
+export const TaskItem: React.FC<TaskItemProps> = ({
+  task,
+  onToggleStatus,
+  onUpdate,
+  onDelete,
+}) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const getPriorityVariant = (priority: Task['priority']) => {
+    switch (priority) {
+      case 'high':
+        return 'danger';
+      case 'medium':
+        return 'warning';
+      case 'low':
+        return 'info';
+      default:
+        return 'secondary';
+    }
+  };
+
+  const getPriorityLabel = (priority: Task['priority']) => {
+    switch (priority) {
+      case 'high':
+        return 'Alta';
+      case 'medium':
+        return 'Media';
+      case 'low':
+        return 'Baja';
+      default:
+        return priority;
+    }
+  };
+
+  const isOverdue = () => {
+    if (task.status === 'completed' || !task.dueDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const dueDate = new Date(task.dueDate + 'T23:59:59');
+    return dueDate < today;
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  };
+
+  const handleEditSubmit = async (values: TaskFormValues) => {
+    await onUpdate(task.id, values);
+    setIsEditOpen(false);
+  };
+
+  return (
+    <>
+      <Card
+        className={`task-item ${task.status === 'completed' ? 'task-completed' : ''} ${isOverdue() ? 'task-overdue' : ''}`}
+        hoverable
+      >
+        <div className="task-item-layout">
+          <div className="task-item-checkbox">
+            <input
+              type="checkbox"
+              checked={task.status === 'completed'}
+              onChange={() => onToggleStatus(task.id)}
+              aria-label={`Marcar "${task.title}" como ${task.status === 'completed' ? 'pendiente' : 'completada'}`}
+              className="task-checkbox"
+            />
+          </div>
+
+          <div className="task-item-body">
+            <div className="task-item-header">
+              <h4 className="task-title">{task.title}</h4>
+              <div className="task-badges">
+                <Badge variant={getPriorityVariant(task.priority)}>
+                  {getPriorityLabel(task.priority)}
+                </Badge>
+                <Badge variant="secondary">{task.category}</Badge>
+              </div>
+            </div>
+            
+            {task.description && (
+              <p className="task-description">{task.description}</p>
+            )}
+
+            <div className="task-item-meta">
+              {task.dueDate && (
+                <span className={`task-due-date ${isOverdue() ? 'text-danger overdue-warning' : ''}`}>
+                  📅 Vence: {formatDate(task.dueDate)} {isOverdue() && ' (Vencida)'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="task-item-actions">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditOpen(true)}
+              className="btn-task-edit"
+              aria-label={`Editar ${task.title}`}
+            >
+              Editar
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(task.id)}
+              className="btn-task-delete text-danger"
+              aria-label={`Eliminar ${task.title}`}
+            >
+              Eliminar
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      <Modal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Editar Tarea"
+      >
+        <TodoForm
+          onSubmit={handleEditSubmit}
+          initialTask={task}
+          submitButtonText="Guardar Cambios"
+        />
+      </Modal>
+    </>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/TaskList.tsx
+// =========================================================================
+
+import React from 'react';
+import type { Task } from '../../types';
+import { TaskItem } from './TaskItem';
+
+interface TaskListProps {
+  tasks: Task[];
+  loading: boolean;
+  onToggleStatus: (id: string) => void;
+  onUpdate: (id: string, updates: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>) => Promise<void>;
+  onDelete: (id: string) => void;
+}
+
+export const TaskList: React.FC<TaskListProps> = ({
+  tasks,
+  loading,
+  onToggleStatus,
+  onUpdate,
+  onDelete,
+}) => {
+  if (loading) {
+    return (
+      <div className="task-list-loading">
+        <div className="loading-spinner"></div>
+        <p>Cargando tus tareas...</p>
+      </div>
+    );
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <div className="task-list-empty">
+        <div className="empty-icon">📋</div>
+        <h3>No hay tareas pendientes</h3>
+        <p>Crea una nueva tarea o modifica los filtros de búsqueda.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="task-list">
+      {tasks.map((task) => (
+        <TaskItem
+          key={task.id}
+          task={task}
+          onToggleStatus={onToggleStatus}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+        />
+      ))}
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/TaskStats.tsx
+// =========================================================================
+
+import React from 'react';
+import { Card } from '../ui/Card';
+
+interface TaskStatsProps {
+  stats: {
+    total: number;
+    completed: number;
+    pending: number;
+    highPriorityPending: number;
+    completionRate: number;
+  };
+}
+
+export const TaskStats: React.FC<TaskStatsProps> = ({ stats }) => {
+  return (
+    <div className="task-stats-grid">
+      <Card className="stat-card">
+        <div className="stat-icon text-primary">📋</div>
+        <div className="stat-info">
+          <span className="stat-label">Total de Tareas</span>
+          <h3 className="stat-value">{stats.total}</h3>
+        </div>
+      </Card>
+
+      <Card className="stat-card">
+        <div className="stat-icon text-success">✓</div>
+        <div className="stat-info">
+          <span className="stat-label">Completadas</span>
+          <h3 className="stat-value">{stats.completed}</h3>
+        </div>
+        <div className="stat-progress-bar-container">
+          <div className="stat-progress-bar">
+            <div
+              className="stat-progress-bar-fill"
+              style={{ width: `${stats.completionRate}%` }}
+            ></div>
+          </div>
+          <span className="stat-progress-bar-label">{stats.completionRate}%</span>
+        </div>
+      </Card>
+
+      <Card className="stat-card">
+        <div className="stat-icon text-warning">⏳</div>
+        <div className="stat-info">
+          <span className="stat-label">Pendientes</span>
+          <h3 className="stat-value">{stats.pending}</h3>
+        </div>
+      </Card>
+
+      <Card className={`stat-card ${stats.highPriorityPending > 0 ? 'border-danger-alert' : ''}`}>
+        <div className="stat-icon text-danger">⚠️</div>
+        <div className="stat-info">
+          <span className="stat-label">Alta Prioridad Pendiente</span>
+          <h3 className={`stat-value ${stats.highPriorityPending > 0 ? 'text-danger' : ''}`}>
+            {stats.highPriorityPending}
+          </h3>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/TodoForm.tsx
+// =========================================================================
+
+import React from 'react';
+import { useForm } from '../../hooks/useForm';
+import { Input } from '../ui/Input';
+import { Select } from '../ui/Select';
+import { Button } from '../ui/Button';
+import type { TaskFormValues, Task } from '../../types';
+
+interface TodoFormProps {
+  onSubmit: (values: TaskFormValues) => void | Promise<void>;
+  initialTask?: Task;
+  submitButtonText?: string;
+}
+
+export const TodoForm: React.FC<TodoFormProps> = ({
+  onSubmit,
+  initialTask,
+  submitButtonText,
+}) => {
+  const form = useForm<TaskFormValues>({
+    initialValues: {
+      title: initialTask?.title || '',
+      description: initialTask?.description || '',
+      priority: initialTask?.priority || 'medium',
+      dueDate: initialTask?.dueDate || '',
+      category: initialTask?.category || 'General',
+    },
+    validate: (values) => {
+      const errors: Partial<Record<keyof TaskFormValues, string>> = {};
+      if (!values.title.trim()) {
+        errors.title = 'El título de la tarea es requerido';
+      } else if (values.title.trim().length < 3) {
+        errors.title = 'El título debe tener al menos 3 caracteres';
+      }
+      if (!values.dueDate) {
+        errors.dueDate = 'La fecha de vencimiento es requerida';
+      }
+      if (!values.category.trim()) {
+        errors.category = 'La categoría es requerida';
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      await onSubmit(values);
+      if (!initialTask) {
+        form.resetForm();
+      }
+    },
+  });
+
+  const priorityOptions = [
+    { value: 'low', label: 'Baja' },
+    { value: 'medium', label: 'Media' },
+    { value: 'high', label: 'Alta' },
+  ];
+
+  return (
+    <form onSubmit={form.handleSubmit} className="todo-form">
+      <Input
+        label="Título"
+        type="text"
+        name="title"
+        value={form.values.title}
+        onChange={form.handleChange}
+        error={form.errors.title}
+        placeholder="Ej: Comprar alimentos"
+        required
+      />
+
+      <Input
+        label="Descripción"
+        multiline
+        name="description"
+        value={form.values.description}
+        onChange={form.handleChange}
+        error={form.errors.description}
+        placeholder="Detalles sobre la tarea..."
+      />
+
+      <div className="form-row">
+        <Select
+          label="Prioridad"
+          name="priority"
+          value={form.values.priority}
+          onChange={form.handleChange}
+          error={form.errors.priority}
+          options={priorityOptions}
+          className="form-col"
+        />
+
+        <Input
+          label="Vencimiento"
+          type="date"
+          name="dueDate"
+          value={form.values.dueDate}
+          onChange={form.handleChange}
+          error={form.errors.dueDate}
+          className="form-col"
+          required
+        />
+      </div>
+
+      <Input
+        label="Categoría"
+        type="text"
+        name="category"
+        value={form.values.category}
+        onChange={form.handleChange}
+        error={form.errors.category}
+        placeholder="Ej: Trabajo, Casa, Estudio"
+        required
+      />
+
+      <div className="form-actions">
+        <Button
+          type="submit"
+          disabled={form.isSubmitting}
+          className="btn-submit-task"
+          fullWidth
+        >
+          {form.isSubmitting
+            ? 'Guardando...'
+            : submitButtonText || (initialTask ? 'Actualizar Tarea' : 'Crear Tarea')}
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/tasks/__tests__/TodoForm.test.tsx
+// =========================================================================
+
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { TodoForm } from '../TodoForm';
+
+describe('TodoForm Component', () => {
+  it('renders all form fields', () => {
+    const mockSubmit = vi.fn();
+    render(<TodoForm onSubmit={mockSubmit} />);
+
+    expect(screen.getByLabelText(/Título/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Descripción/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Prioridad/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Vencimiento/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Categoría/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Crear Tarea/i })).toBeInTheDocument();
+  });
+
+  it('shows validation errors when fields are empty', async () => {
+    const mockSubmit = vi.fn();
+    render(<TodoForm onSubmit={mockSubmit} />);
+
+    const submitBtn = screen.getByRole('button', { name: /Crear Tarea/i });
+    fireEvent.click(submitBtn);
+
+    expect(await screen.findByText(/El título de la tarea es requerido/i)).toBeInTheDocument();
+    expect(screen.getByText(/La fecha de vencimiento es requerida/i)).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+
+    const titleInput = screen.getByLabelText(/Título/i);
+    fireEvent.change(titleInput, { target: { value: 'ab' } });
+    fireEvent.click(submitBtn);
+
+    expect(await screen.findByText(/El título debe tener al menos 3 caracteres/i)).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('submits form with correct values when valid', async () => {
+    const mockSubmit = vi.fn();
+    render(<TodoForm onSubmit={mockSubmit} />);
+
+    fireEvent.change(screen.getByLabelText(/Título/i), { target: { value: 'Lavar ropa' } });
+    fireEvent.change(screen.getByLabelText(/Descripción/i), { target: { value: 'Ropa blanca con jabón suave' } });
+    fireEvent.change(screen.getByLabelText(/Prioridad/i), { target: { value: 'low' } });
+    fireEvent.change(screen.getByLabelText(/Vencimiento/i), { target: { value: '2026-07-05' } });
+    fireEvent.change(screen.getByLabelText(/Categoría/i), { target: { value: 'Casa' } });
+
+    const submitBtn = screen.getByRole('button', { name: /Crear Tarea/i });
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockSubmit).toHaveBeenCalledWith({
+      title: 'Lavar ropa',
+      description: 'Ropa blanca con jabón suave',
+      priority: 'low',
+      dueDate: '2026-07-05',
+      category: 'Casa',
+    });
+  });
+});
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Badge.tsx
+// =========================================================================
+
+import React from 'react';
+
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+}
+
+export const Badge: React.FC<BadgeProps> = ({
+  children,
+  variant = 'primary',
+}) => {
+  return <span className={`badge badge-${variant}`}>{children}</span>;
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Button.tsx
+// =========================================================================
+
+import React from 'react';
+import type { ButtonHTMLAttributes } from 'react';
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  className = '',
+  disabled,
+  ...props
+}) => {
+  const baseClass = 'btn';
+  const variantClass = `btn-${variant}`;
+  const sizeClass = `btn-${size}`;
+  const widthClass = fullWidth ? 'btn-full' : '';
+
+  return (
+    <button
+      className={`${baseClass} ${variantClass} ${sizeClass} ${widthClass} ${className}`}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Card.tsx
+// =========================================================================
+
+import React from 'react';
+import type { HTMLAttributes } from 'react';
+
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  hoverable?: boolean;
+}
+
+export const Card: React.FC<CardProps> = ({
+  children,
+  hoverable = false,
+  className = '',
+  ...props
+}) => {
+  return (
+    <div
+      className={`card ${hoverable ? 'card-hoverable' : ''} ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Input.tsx
+// =========================================================================
+
+import React from 'react';
+import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
+
+interface BaseProps {
+  label?: string;
+  error?: string;
+}
+
+type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & {
+  multiline?: false;
+};
+
+type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  multiline: true;
+  rows?: number;
+};
+
+export const Input: React.FC<InputProps | TextareaProps> = (props) => {
+  const { label, error, multiline, className = '', id, ...rest } = props;
+  const inputId = id || `input-${Math.random().toString(36).substring(2, 11)}`;
+  const containerClass = `form-group ${error ? 'has-error' : ''} ${className}`;
+
+  if (multiline) {
+    const { rows = 3, ...textareaProps } = rest as TextareaHTMLAttributes<HTMLTextAreaElement> & { rows?: number };
+    return (
+      <div className={containerClass}>
+        {label && (
+          <label htmlFor={inputId} className="form-label">
+            {label}
+          </label>
+        )}
+        <textarea
+          id={inputId}
+          className="form-control"
+          rows={rows}
+          {...textareaProps}
+        />
+        {error && <span className="error-message" role="alert">{error}</span>}
+      </div>
+    );
+  }
+
+  const inputProps = rest as InputHTMLAttributes<HTMLInputElement>;
+  return (
+    <div className={containerClass}>
+      {label && (
+        <label htmlFor={inputId} className="form-label">
+          {label}
+        </label>
+      )}
+      <input
+        id={inputId}
+        className="form-control"
+        {...inputProps}
+      />
+      {error && <span className="error-message" role="alert">{error}</span>}
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Modal.tsx
+// =========================================================================
+
+import React, { useEffect } from 'react';
+import { Button } from './Button';
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <header className="modal-header">
+          <h3 id="modal-title">{title}</h3>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className="modal-close-btn"
+            aria-label="Cerrar modal"
+          >
+            &times;
+          </Button>
+        </header>
+        <div className="modal-body">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/components/ui/Select.tsx
+// =========================================================================
+
+import React from 'react';
+import type { SelectHTMLAttributes } from 'react';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  options: SelectOption[];
+  error?: string;
+}
+
+export const Select: React.FC<SelectProps> = ({
+  label,
+  options,
+  error,
+  className = '',
+  id,
+  ...props
+}) => {
+  const selectId = id || `select-${Math.random().toString(36).substring(2, 11)}`;
+
+  return (
+    <div className={`form-group ${error ? 'has-error' : ''} ${className}`}>
+      {label && (
+        <label htmlFor={selectId} className="form-label">
+          {label}
+        </label>
+      )}
+      <select id={selectId} className="form-select" {...props}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      {error && <span className="error-message" role="alert">{error}</span>}
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/context/auth/AuthContext.tsx
+// =========================================================================
+
+import React, { createContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import type { AuthValues, LoginFormValues, RegisterFormValues, User } from '../../types';
+import { getAuthService } from '../../services/serviceFactory';
+
+export const AuthContext = createContext<AuthValues | undefined>(undefined);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const authService = getAuthService();
+
+  useEffect(() => {
+    const unsubscribe = authService.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [authService]);
+
+  const login = async (values: LoginFormValues) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const loggedUser = await authService.login(values);
+      setUser(loggedUser);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Error desconocido al iniciar sesión';
+      setError(errMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (values: RegisterFormValues) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const registeredUser = await authService.register(values);
+      setUser(registeredUser);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Error desconocido al registrar usuario';
+      setError(errMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await authService.logout();
+      setUser(null);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Error desconocido al cerrar sesión';
+      setError(errMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, error, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/hooks/useAuth.ts
+// =========================================================================
+
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth/AuthContext';
+import type { AuthValues } from '../types';
+
+export const useAuth = (): AuthValues => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth debe utilizarse dentro de un AuthProvider');
+  }
+  return context;
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/hooks/useForm.ts
+// =========================================================================
+
+import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+
+interface UseFormConfig<T> {
+  initialValues: T;
+  validate?: (values: T) => Partial<Record<keyof T, string>>;
+  onSubmit: (values: T) => void | Promise<void>;
+}
+
+export const useForm = <T extends Record<string, any>>({
+  initialValues,
+  validate,
+  onSubmit,
+}: UseFormConfig<T>) => {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const handleCustomChange = (name: keyof T, value: unknown) => {
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const resetForm = () => {
+    setValues(initialValues);
+    setErrors({});
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (validate) {
+      const validationErrors = validate(values);
+      // Filter out undefined errors
+      const activeErrors = Object.keys(validationErrors).reduce((acc, key) => {
+        if (validationErrors[key]) {
+          acc[key] = validationErrors[key];
+        }
+        return acc;
+      }, {} as Record<string, string | undefined>);
+
+      if (Object.keys(activeErrors).length > 0) {
+        setErrors(activeErrors as Partial<Record<keyof T, string>>);
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      console.error('Form submission error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    values,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleCustomChange,
+    handleSubmit,
+    resetForm,
+    setValues,
+    setErrors,
+  };
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/hooks/useTasks.ts
+// =========================================================================
+
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import type { Task, TaskFormValues } from '../types';
+import {
+  createTask as apiCreateTask,
+  updateTask as apiUpdateTask,
+  deleteTask as apiDeleteTask,
+  subscribeToUserTasks,
+} from '../services/firebase/firebaseTaskService';
+
+export const useTasks = (userId: string | undefined) => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Filter & Search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'pending'>('all');
+  const [priorityFilter, setPriorityFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<'newest' | 'dueDateAsc' | 'dueDateDesc' | 'priorityHigh' | 'priorityLow'>('newest');
+
+  // Real-time listener
+  useEffect(() => {
+    if (!userId) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    const unsubscribe = subscribeToUserTasks(
+      userId,
+      (fetchedTasks) => {
+        setTasks(fetchedTasks);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err.message || 'Error en la suscripción a Firestore');
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userId]);
+
+  // Operations wrapped in try/catch to set/reset errors
+  const createTask = useCallback(
+    async (data: TaskFormValues) => {
+      if (!userId) return;
+      setError(null);
+      try {
+        await apiCreateTask(userId, data);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al crear la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    [userId]
+  );
+
+  const updateTask = useCallback(
+    async (taskId: string, data: Partial<Task>) => {
+      setError(null);
+      try {
+        await apiUpdateTask(taskId, data);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al actualizar la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const deleteTask = useCallback(
+    async (taskId: string) => {
+      setError(null);
+      try {
+        await apiDeleteTask(taskId);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al eliminar la tarea';
+        setError(errMsg);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const toggleTaskStatus = useCallback(
+    async (taskId: string) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+      const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+      setError(null);
+      try {
+        await apiUpdateTask(taskId, { status: newStatus });
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : 'Error al actualizar la tarea';
+        setError(errMsg);
+      }
+    },
+    [tasks]
+  );
+
+  const categories = useMemo(() => {
+    const list = tasks.map((t) => t.category).filter(Boolean);
+    return ['all', ...Array.from(new Set(list))];
+  }, [tasks]);
+
+  const filteredTasks = useMemo(() => {
+    let result = [...tasks];
+
+    if (searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (t) =>
+          t.title.toLowerCase().includes(query) ||
+          t.description.toLowerCase().includes(query)
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      result = result.filter((t) => t.status === statusFilter);
+    }
+
+    if (priorityFilter !== 'all') {
+      result = result.filter((t) => t.priority === priorityFilter);
+    }
+
+    if (categoryFilter !== 'all') {
+      result = result.filter((t) => t.category.toLowerCase() === categoryFilter.toLowerCase());
+    }
+
+    result.sort((a, b) => {
+      if (sortBy === 'newest') {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+
+      if (sortBy === 'dueDateAsc') {
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+
+      if (sortBy === 'dueDateDesc') {
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      }
+
+      const priorityWeight = { high: 3, medium: 2, low: 1 };
+      if (sortBy === 'priorityHigh') {
+        return priorityWeight[b.priority] - priorityWeight[a.priority];
+      }
+
+      if (sortBy === 'priorityLow') {
+        return priorityWeight[a.priority] - priorityWeight[b.priority];
+      }
+
+      return 0;
+    });
+
+    return result;
+  }, [tasks, searchQuery, statusFilter, priorityFilter, categoryFilter, sortBy]);
+
+  const stats = useMemo(() => {
+    const total = tasks.length;
+    const completed = tasks.filter((t) => t.status === 'completed').length;
+    const pending = total - completed;
+    const highPriorityPending = tasks.filter(
+      (t) => t.priority === 'high' && t.status === 'pending'
+    ).length;
+
+    return {
+      total,
+      completed,
+      pending,
+      highPriorityPending,
+      completionRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+    };
+  }, [tasks]);
+
+  return {
+    tasks: filteredTasks,
+    allTasksCount: tasks.length,
+    loading,
+    error,
+    createTask,
+    updateTask,
+    deleteTask,
+
+    // UI and compatibility mappings
+    addTask: createTask,
+    toggleTaskStatus,
+    categories,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    priorityFilter,
+    setPriorityFilter,
+    categoryFilter,
+    setCategoryFilter,
+    sortBy,
+    setSortBy,
+    stats,
+  };
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/index.css
+// =========================================================================
+
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+    --social-bg: rgba(47, 48, 58, 0.5);
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+
+  #social .button-icon {
+    filter: invert(1) brightness(2);
+  }
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
+
+
+
+// =========================================================================
+// ARCHIVO: src/main.tsx
+// =========================================================================
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+
+// =========================================================================
+// ARCHIVO: src/pages/auth/LoginPage.tsx
+// =========================================================================
+
+import React from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { LoginForm } from '../../components/auth/LoginForm';
+import { Card } from '../../components/ui/Card';
+
+export const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleSuccess = () => {
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="auth-page-container">
+      <Card className="auth-card">
+        <h2 className="auth-title">Ingresar</h2>
+        <p className="auth-subtitle">Ingresa tus datos para acceder a tu cuenta</p>
+        
+        <LoginForm onSuccess={handleSuccess} />
+        
+        <div className="auth-footer-link">
+          ¿No tienes cuenta? <NavLink to="/register">Regístrate aquí</NavLink>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/pages/auth/RegisterPage.tsx
+// =========================================================================
+
+import React from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { RegisterForm } from '../../components/auth/RegisterForm';
+import { Card } from '../../components/ui/Card';
+
+export const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleSuccess = () => {
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="auth-page-container">
+      <Card className="auth-card">
+        <h2 className="auth-title">Registrarse</h2>
+        <p className="auth-subtitle">Crea una cuenta para organizar tus tareas</p>
+        
+        <RegisterForm onSuccess={handleSuccess} />
+        
+        <div className="auth-footer-link">
+          ¿Ya tienes cuenta? <NavLink to="/login">Inicia sesión</NavLink>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/pages/dashboard/DashboardPage.tsx
+// =========================================================================
+
+import React, { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { useTasks } from '../../hooks/useTasks';
+import { TaskStats } from '../../components/tasks/TaskStats';
+import { TaskFilters } from '../../components/tasks/TaskFilters';
+import { TaskList } from '../../components/tasks/TaskList';
+import { TodoForm } from '../../components/tasks/TodoForm';
+import { Button } from '../../components/ui/Button';
+import { Modal } from '../../components/ui/Modal';
+import type { TaskFormValues } from '../../types';
+
+export const DashboardPage: React.FC = () => {
+  const { user } = useAuth();
+  const {
+    tasks,
+    loading,
+    error,
+    categories,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    priorityFilter,
+    setPriorityFilter,
+    categoryFilter,
+    setCategoryFilter,
+    sortBy,
+    setSortBy,
+    addTask,
+    toggleTaskStatus,
+    updateTask,
+    deleteTask,
+    stats,
+  } = useTasks(user?.uid);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleAddTaskSubmit = async (values: TaskFormValues) => {
+    await addTask(values);
+    setIsAddModalOpen(false);
+  };
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <div>
+          <h2 className="dashboard-title">Mi Tablero</h2>
+          <p className="dashboard-subtitle">Gestiona tus tareas y aumenta tu productividad</p>
+        </div>
+        <Button
+          variant="primary"
+          onClick={() => setIsAddModalOpen(true)}
+          className="btn-add-task-trigger"
+        >
+          ➕ Nueva Tarea
+        </Button>
+      </div>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
+      <TaskStats stats={stats} />
+
+      <TaskFilters
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        categories={categories}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
+
+      <div className="task-list-section">
+        <h3 className="section-title-small">
+          Tareas del Tablero ({tasks.length})
+        </h3>
+        <TaskList
+          tasks={tasks}
+          loading={loading}
+          onToggleStatus={toggleTaskStatus}
+          onUpdate={updateTask}
+          onDelete={deleteTask}
+        />
+      </div>
+
+      <Modal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        title="Crear Nueva Tarea"
+      >
+        <TodoForm onSubmit={handleAddTaskSubmit} />
+      </Modal>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/pages/home/HomePage.tsx
+// =========================================================================
+
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { Card } from '../../components/ui/Card';
+
+export const HomePage: React.FC = () => {
+  const { user } = useAuth();
+
+  return (
+    <div className="home-page-container">
+      <section className="hero-section">
+        <h1 className="hero-title">Organiza tu vida, <br />una tarea a la vez</h1>
+        <p className="hero-subtitle">
+          El Gestor de Tareas definitivo que te ayuda a mantenerte enfocado,
+          organizado y productivo. Controla tus actividades diarias con facilidad.
+        </p>
+        
+        <div className="hero-cta-container">
+          {user ? (
+            <NavLink to="/dashboard" className="btn btn-primary btn-lg">
+              Ir a mi Tablero
+            </NavLink>
+          ) : (
+            <div className="hero-buttons">
+              <NavLink to="/register" className="btn btn-primary btn-lg">
+                Comenzar Gratis
+              </NavLink>
+              <NavLink to="/login" className="btn btn-outline btn-lg">
+                Iniciar Sesión
+              </NavLink>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="features-section">
+        <h2 className="section-title">Características Principales</h2>
+        
+        <div className="features-grid">
+          <Card className="feature-card" hoverable>
+            <div className="feature-icon">⚡</div>
+            <h3>Rápido e Intuitivo</h3>
+            <p>
+              Crea, edita y gestiona tus tareas en segundos con una interfaz moderna y fluida.
+            </p>
+          </Card>
+
+          <Card className="feature-card" hoverable>
+            <div className="feature-icon">📊</div>
+            <h3>Métricas en Tiempo Real</h3>
+            <p>
+              Monitorea tu productividad con indicadores de avance y tareas de alta prioridad.
+            </p>
+          </Card>
+
+          <Card className="feature-card" hoverable>
+            <div className="feature-icon">🔍</div>
+            <h3>Filtros Avanzados</h3>
+            <p>
+              Busca y ordena por categorías, estados y prioridades para encontrar lo que necesitas.
+            </p>
+          </Card>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/routes/AppRoutes.tsx
+// =========================================================================
+
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { Layout } from '../components/layout/Layout';
+import { HomePage } from '../pages/home/HomePage';
+import { LoginPage } from '../pages/auth/LoginPage';
+import { RegisterPage } from '../pages/auth/RegisterPage';
+import { DashboardPage } from '../pages/dashboard/DashboardPage';
+
+interface RouteWrapperProps {
+  children: React.ReactElement;
+}
+
+const ProtectedRoute: React.FC<RouteWrapperProps> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Verificando sesión...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const PublicOnlyRoute: React.FC<RouteWrapperProps> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Verificando sesión...</p>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
+export const AppRoutes: React.FC = () => {
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute>
+              <LoginPage />
+            </PublicOnlyRoute>
+          }
+        />
+        
+        <Route
+          path="/register"
+          element={
+            <PublicOnlyRoute>
+              <RegisterPage />
+            </PublicOnlyRoute>
+          }
+        />
+        
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout>
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/api/storageService.ts
+// =========================================================================
+
+import type { LoginFormValues, RegisterFormValues, User, Task } from '../../types';
+
+const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const USERS_KEY = 'task_manager_users';
+const TASKS_KEY = 'task_manager_tasks';
+const SESSION_KEY = 'task_manager_current_user';
+
+let authListeners: Array<(user: User | null) => void> = [];
+
+const triggerAuthListeners = (user: User | null) => {
+  authListeners.forEach((listener) => listener(user));
+};
+
+export const storageService = {
+  // --- AUTH METHODS ---
+  login: async (values: LoginFormValues): Promise<User> => {
+    await delay();
+    const usersJson = localStorage.getItem(USERS_KEY);
+    const users: Array<User & { password?: string }> = usersJson ? JSON.parse(usersJson) : [];
+    
+    const user = users.find(
+      (u) => u.email.toLowerCase() === values.email.toLowerCase() && u.password === values.password
+    );
+    
+    if (!user) {
+      throw new Error('Credenciales incorrectas o usuario no registrado');
+    }
+    
+    const sessionUser: User = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+    };
+    
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
+    triggerAuthListeners(sessionUser);
+    return sessionUser;
+  },
+
+  register: async (values: RegisterFormValues): Promise<User> => {
+    await delay();
+    const usersJson = localStorage.getItem(USERS_KEY);
+    const users: Array<User & { password?: string }> = usersJson ? JSON.parse(usersJson) : [];
+    
+    const emailExists = users.some(
+      (u) => u.email.toLowerCase() === values.email.toLowerCase()
+    );
+    
+    if (emailExists) {
+      throw new Error('El correo electrónico ya está registrado');
+    }
+    
+    const newUser = {
+      uid: 'local_' + Math.random().toString(36).substring(2, 11),
+      email: values.email,
+      displayName: values.displayName,
+      password: values.password,
+    };
+    
+    users.push(newUser);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    
+    const sessionUser: User = {
+      uid: newUser.uid,
+      email: newUser.email,
+      displayName: newUser.displayName,
+    };
+    
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
+    triggerAuthListeners(sessionUser);
+    return sessionUser;
+  },
+
+  logout: async (): Promise<void> => {
+    await delay();
+    localStorage.removeItem(SESSION_KEY);
+    triggerAuthListeners(null);
+  },
+
+  onAuthStateChanged: (callback: (user: User | null) => void): (() => void) => {
+    authListeners.push(callback);
+    
+    const sessionUserJson = localStorage.getItem(SESSION_KEY);
+    if (sessionUserJson) {
+      try {
+        const sessionUser = JSON.parse(sessionUserJson) as User;
+        callback(sessionUser);
+      } catch {
+        callback(null);
+      }
+    } else {
+      callback(null);
+    }
+    
+    return () => {
+      authListeners = authListeners.filter((listener) => listener !== callback);
+    };
+  },
+
+  // --- TASK METHODS ---
+  getTasks: async (userId: string): Promise<Task[]> => {
+    await delay();
+    const tasksJson = localStorage.getItem(TASKS_KEY);
+    const tasks: Task[] = tasksJson ? JSON.parse(tasksJson) : [];
+    return tasks
+      .filter((t) => t.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  addTask: async (
+    taskData: Omit<Task, 'id' | 'createdAt' | 'userId' | 'status'>,
+    userId: string
+  ): Promise<Task> => {
+    await delay();
+    const tasksJson = localStorage.getItem(TASKS_KEY);
+    const tasks: Task[] = tasksJson ? JSON.parse(tasksJson) : [];
+    
+    const newTask: Task = {
+      ...taskData,
+      id: 'task_' + Math.random().toString(36).substring(2, 11),
+      status: 'pending',
+      userId,
+      createdAt: new Date().toISOString(),
+    };
+    
+    tasks.push(newTask);
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+    return newTask;
+  },
+
+  updateTask: async (
+    taskId: string,
+    taskUpdates: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>
+  ): Promise<void> => {
+    await delay();
+    const tasksJson = localStorage.getItem(TASKS_KEY);
+    if (!tasksJson) return;
+    
+    const tasks: Task[] = JSON.parse(tasksJson);
+    const updatedTasks = tasks.map((t) => {
+      if (t.id === taskId) {
+        return { ...t, ...taskUpdates };
+      }
+      return t;
+    });
+    
+    localStorage.setItem(TASKS_KEY, JSON.stringify(updatedTasks));
+  },
+
+  deleteTask: async (taskId: string): Promise<void> => {
+    await delay();
+    const tasksJson = localStorage.getItem(TASKS_KEY);
+    if (!tasksJson) return;
+    
+    const tasks: Task[] = JSON.parse(tasksJson);
+    const filteredTasks = tasks.filter((t) => t.id !== taskId);
+    
+    localStorage.setItem(TASKS_KEY, JSON.stringify(filteredTasks));
+  },
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/firebase/authService.ts
+// =========================================================================
+
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged as firebaseOnAuthStateChanged,
+  updateProfile,
+} from 'firebase/auth';
+import type { User as FirebaseUser } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import { auth } from './config';
+import type { LoginFormValues, RegisterFormValues, User } from '../../types';
+
+const mapFirebaseUser = (firebaseUser: FirebaseUser): User => {
+  return {
+    uid: firebaseUser.uid,
+    email: firebaseUser.email || '',
+    displayName: firebaseUser.displayName || undefined,
+  };
+};
+
+const translateAuthError = (error: unknown): string => {
+  if (error instanceof FirebaseError) {
+    switch (error.code) {
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found':
+        return 'Correo o contraseña incorrectos.';
+      case 'auth/email-already-in-use':
+        return 'Este correo ya está registrado en otra cuenta.';
+      case 'auth/weak-password':
+        return 'La contraseña debe tener al menos 6 caracteres.';
+      case 'auth/invalid-email':
+        return 'El formato del correo no es válido.';
+      case 'auth/network-request-failed':
+        return 'Error de conexión. Verifica tu internet.';
+      default:
+        return error.message || 'Ocurrió un error inesperado durante la autenticación.';
+    }
+  }
+  return error instanceof Error ? error.message : 'Ocurrió un error inesperado durante la autenticación.';
+};
+
+export const authService = {
+  login: async (values: LoginFormValues): Promise<User> => {
+    if (!auth) throw new Error('Firebase Auth is not initialized');
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      return mapFirebaseUser(userCredential.user);
+    } catch (error) {
+      throw new Error(translateAuthError(error));
+    }
+  },
+
+  register: async (values: RegisterFormValues): Promise<User> => {
+    if (!auth) throw new Error('Firebase Auth is not initialized');
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      
+      if (values.displayName) {
+        await updateProfile(userCredential.user, {
+          displayName: values.displayName,
+        });
+      }
+      
+      await userCredential.user.reload();
+      const updatedUser = auth.currentUser || userCredential.user;
+      
+      return mapFirebaseUser(updatedUser);
+    } catch (error) {
+      throw new Error(translateAuthError(error));
+    }
+  },
+
+  logout: async (): Promise<void> => {
+    if (!auth) throw new Error('Firebase Auth is not initialized');
+    await signOut(auth);
+  },
+
+  onAuthStateChanged: (callback: (user: User | null) => void): (() => void) => {
+    if (!auth) {
+      return () => {};
+    }
+    return firebaseOnAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        callback(mapFirebaseUser(firebaseUser));
+      } else {
+        callback(null);
+      }
+    });
+  },
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/firebase/config.ts
+// =========================================================================
+
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+};
+
+const isConfigured = !!(
+  firebaseConfig.apiKey &&
+  firebaseConfig.projectId &&
+  firebaseConfig.appId
+);
+
+let app: ReturnType<typeof initializeApp> | null = null;
+let auth: ReturnType<typeof getAuth> | null = null;
+let db: ReturnType<typeof getFirestore> | null = null;
+
+if (isConfigured) {
+  try {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+  }
+}
+
+export const firebaseEnabled = isConfigured && auth !== null && db !== null;
+export { auth, db };
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/firebase/firebaseTaskService.ts
+// =========================================================================
+
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot,
+} from 'firebase/firestore';
+import { db } from './config';
+import type { Task, TaskFormValues } from '../../types';
+
+export const createTask = async (userId: string, data: TaskFormValues): Promise<void> => {
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+  const tasksRef = collection(db, 'tasks');
+  await addDoc(tasksRef, {
+    title: data.title,
+    description: data.description,
+    priority: data.priority,
+    dueDate: data.dueDate,
+    category: data.category,
+    userId,
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+  });
+};
+
+export const updateTask = async (taskId: string, data: Partial<Task>): Promise<void> => {
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+  const taskRef = doc(db, 'tasks', taskId);
+  
+  // Create updates object without undefined fields or the id field to avoid issues
+  const updates: Record<string, unknown> = {};
+  if (data.title !== undefined) updates.title = data.title;
+  if (data.description !== undefined) updates.description = data.description;
+  if (data.status !== undefined) updates.status = data.status;
+  if (data.priority !== undefined) updates.priority = data.priority;
+  if (data.dueDate !== undefined) updates.dueDate = data.dueDate;
+  if (data.category !== undefined) updates.category = data.category;
+  if (data.userId !== undefined) updates.userId = data.userId;
+  if (data.createdAt !== undefined) updates.createdAt = data.createdAt;
+
+  await updateDoc(taskRef, updates);
+};
+
+export const deleteTask = async (taskId: string): Promise<void> => {
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+  const taskRef = doc(db, 'tasks', taskId);
+  await deleteDoc(taskRef);
+};
+
+export const subscribeToUserTasks = (
+  userId: string,
+  callback: (tasks: Task[]) => void,
+  onError?: (error: Error) => void
+): (() => void) => {
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+  const tasksRef = collection(db, 'tasks');
+  const q = query(tasksRef, where('userId', '==', userId));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const tasksList: Task[] = [];
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const task: Task = {
+          id: docSnap.id,
+          title: typeof data.title === 'string' ? data.title : '',
+          description: typeof data.description === 'string' ? data.description : '',
+          status: (data.status === 'completed' || data.status === 'pending') ? data.status : 'pending',
+          priority: (data.priority === 'low' || data.priority === 'medium' || data.priority === 'high') ? data.priority : 'medium',
+          dueDate: typeof data.dueDate === 'string' ? data.dueDate : '',
+          category: typeof data.category === 'string' ? data.category : '',
+          userId: typeof data.userId === 'string' ? data.userId : '',
+          createdAt: typeof data.createdAt === 'string' ? data.createdAt : '',
+        };
+        tasksList.push(task);
+      });
+      callback(tasksList);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      } else {
+        console.error('Error onSnapshot in subscribeToUserTasks:', error);
+      }
+    }
+  );
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/firebase/taskService.ts
+// =========================================================================
+
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+} from 'firebase/firestore';
+import { db } from './config';
+import type { Task } from '../../types';
+
+export const taskService = {
+  getTasks: async (userId: string): Promise<Task[]> => {
+    if (!db) throw new Error('Firestore is not initialized');
+    const tasksRef = collection(db, 'tasks');
+    const q = query(
+      tasksRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const querySnapshot = await getDocs(q);
+    const tasks: Task[] = [];
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      tasks.push({
+        id: docSnap.id,
+        title: data.title || '',
+        description: data.description || '',
+        status: data.status || 'pending',
+        priority: data.priority || 'medium',
+        dueDate: data.dueDate || '',
+        category: data.category || 'General',
+        userId: data.userId || '',
+        createdAt: data.createdAt || new Date().toISOString(),
+      } as Task);
+    });
+    return tasks;
+  },
+
+  addTask: async (
+    taskData: Omit<Task, 'id' | 'createdAt' | 'userId' | 'status'>,
+    userId: string
+  ): Promise<Task> => {
+    if (!db) throw new Error('Firestore is not initialized');
+    const tasksRef = collection(db, 'tasks');
+    const newTask = {
+      ...taskData,
+      status: 'pending' as const,
+      userId,
+      createdAt: new Date().toISOString(),
+    };
+    const docRef = await addDoc(tasksRef, newTask);
+    return {
+      ...newTask,
+      id: docRef.id,
+    } as Task;
+  },
+
+  updateTask: async (
+    taskId: string,
+    taskUpdates: Partial<Omit<Task, 'id' | 'userId' | 'createdAt'>>
+  ): Promise<void> => {
+    if (!db) throw new Error('Firestore is not initialized');
+    const taskRef = doc(db, 'tasks', taskId);
+    await updateDoc(taskRef, taskUpdates);
+  },
+
+  deleteTask: async (taskId: string): Promise<void> => {
+    if (!db) throw new Error('Firestore is not initialized');
+    const taskRef = doc(db, 'tasks', taskId);
+    await deleteDoc(taskRef);
+  },
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/services/serviceFactory.ts
+// =========================================================================
+
+import { firebaseEnabled } from './firebase/config';
+import { authService as firebaseAuthService } from './firebase/authService';
+import { taskService as firebaseTaskService } from './firebase/taskService';
+import { storageService } from './api/storageService';
+
+if (firebaseEnabled) {
+  console.log('Task Manager: Running in Firebase Mode (Firestore & Auth)');
+} else {
+  console.warn(
+    'Task Manager: Firebase environment keys not found. Falling back to LocalStorage Mode.'
+  );
+}
+
+export const getAuthService = () => {
+  return firebaseEnabled ? firebaseAuthService : storageService;
+};
+
+export const getTaskService = () => {
+  return firebaseEnabled ? firebaseTaskService : storageService;
+};
+
+
+
+// =========================================================================
+// ARCHIVO: src/test/setup.ts
+// =========================================================================
+
+import '@testing-library/jest-dom';
+
+
+
+// =========================================================================
+// ARCHIVO: src/types/index.ts
+// =========================================================================
+
+export interface User {
+  uid: string;
+  email: string;
+  displayName?: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'pending' | 'completed';
+  priority: 'low' | 'medium' | 'high';
+  dueDate: string;
+  category: string;
+  userId: string;
+  createdAt: string;
+}
+
+export interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormValues extends LoginFormValues {
+  displayName: string;
+  confirmPassword?: string;
+}
+
+export interface TaskFormValues {
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  dueDate: string;
+  category: string;
+}
+
+export interface AuthValues {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  login: (values: LoginFormValues) => Promise<void>;
+  register: (values: RegisterFormValues) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+
+
