@@ -5,6 +5,7 @@ import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import type { RegisterFormValues } from '../../types';
 import toast from 'react-hot-toast';
+import { sendNotificationEmail } from '../../services/api/emailService';
 
 interface RegisterFormProps {
   onSuccess: () => void;
@@ -48,6 +49,23 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     onSubmit: async (values) => {
       try {
         await register(values);
+        
+        // Enviar correo de bienvenida en segundo plano
+        try {
+          const subject = '¡Bienvenido a GestorTareas!';
+          const text = `¡Hola, ${values.displayName}!
+
+Te damos la bienvenida a GestorTareas. Tu cuenta ha sido creada exitosamente con el correo electrónico: ${values.email}.
+
+Esperamos que disfrutes organizando tus tareas con nosotros.
+
+Saludos,
+El equipo de GestorTareas.`;
+          await sendNotificationEmail(values.email, subject, text);
+        } catch (emailError) {
+          console.error('Error al enviar el correo de bienvenida:', emailError);
+        }
+
         onSuccess();
       } catch (err: unknown) {
         // Handled reactively via submitError useEffect

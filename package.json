@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.1077.0",
     "firebase": "^12.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
