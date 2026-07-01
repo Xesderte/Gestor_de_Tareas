@@ -21,12 +21,13 @@ const mapFirebaseUser = (firebaseUser: FirebaseUser): User => {
 const translateAuthError = (error: unknown): string => {
   if (error instanceof FirebaseError) {
     switch (error.code) {
-      case 'auth/invalid-credential':
-      case 'auth/wrong-password':
       case 'auth/user-not-found':
-        return 'Correo o contraseña incorrectos.';
+        return 'Este correo no está registrado.';
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return 'La contraseña es incorrecta.';
       case 'auth/email-already-in-use':
-        return 'Este correo ya está registrado en otra cuenta.';
+        return 'Este correo ya está registrado, no puedes utilizarlo.';
       case 'auth/weak-password':
         return 'La contraseña debe tener al menos 6 caracteres.';
       case 'auth/invalid-email':

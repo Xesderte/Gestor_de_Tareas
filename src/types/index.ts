@@ -41,4 +41,5 @@ export interface AuthValues {
   login: (values: LoginFormValues) => Promise<void>;
   register: (values: RegisterFormValues) => Promise<void>;
   logout: () => Promise<void>;
+  clearError: () => void;
 }
