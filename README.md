@@ -67,6 +67,7 @@ mails de @yopmail verificados
 
 **Pasos para probar el registro y la recepción del correo:**
 1. Ingrese a la aplicación web y diríjase a la vista de **Registro**.
+   [Link de Gestor de Tareas](https://gestor-de-tareas-delta.vercel.app/)
 2. Utilice **obligatoriamente** uno de los siguientes correos electrónicos para crear la cuenta:
    * `juanmanuel.pruba01@yopmail.com`
    * `carloscanale.prueba02@yopmail.com`
