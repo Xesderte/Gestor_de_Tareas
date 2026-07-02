@@ -1,75 +1,115 @@
-# React + TypeScript + Vite
+# ✅ Gestor de Tareas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una aplicación web moderna y responsiva para la gestión de actividades diarias, diseñada para ayudar a los usuarios a mantener el enfoque y la productividad mediante el seguimiento de tareas, filtrado avanzado y métricas en tiempo real.
 
-Currently, two official plugins are available:
+**🔗 Enlace en vivo:** [Inserta el link de tu proyecto en Vercel aquí]
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🛠️ Tecnologías y Herramientas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Este proyecto fue desarrollado utilizando un stack moderno enfocado en la escalabilidad y el rendimiento:
 
-## Expanding the ESLint configuration
+* **Frontend:** React 19, TypeScript, Vite.
+* **Estilos:** CSS3 nativo con variables globales (Custom Properties) para soporte de temas claro/oscuro y diseño completamente responsivo.
+* **Backend as a Service (BaaS):** Firebase (Authentication y Firestore) con Reglas de Seguridad estrictas.
+* **Serverless & Notificaciones:** Vercel Functions (`/api`) integrado con el SDK de **AWS SES** para envío de correos transaccionales.
+* **Testing:** Vitest y React Testing Library para pruebas unitarias y de componentes con simulación (mocks) de servicios externos.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Instalación y Ejecución Local
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Para clonar y probar este proyecto en un entorno local, sigue estos pasos:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone [TU_LINK_DE_GITHUB]
+    cd Gestor_de_Tareas
+    ```
 
-```
+2.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3.  **Configurar Variables de Entorno:**
+    Crea un archivo `.env` en la raíz del proyecto y agrega tus credenciales de Firebase y AWS (las credenciales de AWS deben ingresarse sin el prefijo `VITE_` para seguridad del servidor):
+    ```env
+    VITE_FIREBASE_API_KEY="..."
+    VITE_FIREBASE_AUTH_DOMAIN="..."
+    VITE_FIREBASE_PROJECT_ID="..."
+    # Resto de credenciales de Firebase...
+    
+    AWS_ACCESS_KEY_ID="..."
+    AWS_SECRET_ACCESS_KEY="..."
+    AWS_REGION="sa-east-1"
+    AWS_SES_FROM_EMAIL="..."
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4.  **Levantar el servidor de desarrollo:**
+    ```bash
+    npm run dev
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
 
-```
+## 🧪 Instrucciones de Prueba para Evaluadores (Sistema de Correos)
+
+El sistema cuenta con una integración Serverless que envía un correo de bienvenida automático a los nuevos usuarios. 
+
+**Nota Técnica sobre AWS SES:** Actualmente, la cuenta de Amazon Web Services se encuentra en modo **Sandbox**. Por políticas de seguridad estricta de AWS, los correos solo pueden enviarse hacia direcciones de email previamente verificadas por el administrador.
+
+Para facilitar la evaluación sin necesidad de solicitar permisos o utilizar sus correos personales, he pre-verificado direcciones de **Yopmail**. Se utiliza `@yopmail.com` porque permite acceder a bandejas de entrada públicas sin requerir contraseñas ni verificación telefónica, agilizando el flujo de prueba.
+
+![Verificación de identidades en AWS SES](INSERTA_AQUI_EL_LINK_DE_TU_CAPTURA_DE_AWS)
+
+**Pasos para probar el registro y la recepción del correo:**
+1. Ingrese a la aplicación web y diríjase a la vista de **Registro**.
+2. Utilice **obligatoriamente** uno de los siguientes correos electrónicos para crear la cuenta:
+   * `juanmanuel.pruba01@yopmail.com`
+   * `carloscanale.prueba02@yopmail.com`
+3. Complete los demás campos (nombre y contraseña segura) y presione "Crear Cuenta".
+4. Abra una nueva pestaña y diríjase a [yopmail.com](https://yopmail.com/).
+5. Ingrese el correo utilizado en el cuadro de búsqueda para acceder a la bandeja pública y verificar la recepción exitosa del correo enviado por nuestra Serverless Function.
+
+---
+
+## 🏗️ Arquitectura y Organización del Proyecto
+
+El proyecto sigue una **arquitectura por capas** y un diseño modular para garantizar el desacoplamiento, la facilidad de pruebas y el mantenimiento a largo plazo.
+
+* **`/api`**: Contiene la función Serverless de Vercel (`send-email.ts`) que maneja de forma segura el SDK de AWS SES, manteniendo las claves fuera del alcance del frontend.
+* **`/src/components`**: Implementa el patrón *Atomic Design* simplificado:
+    * `/ui`: Componentes puros y reutilizables (Botones, Inputs, Modales, Badges).
+    * `/layout`: Estructura principal de la aplicación (Header, Footer).
+    * `/auth` y `/tasks`: Componentes específicos de dominio (Formularios, Listas de tareas).
+* **`/src/context`**: Gestión del estado global, aislando la lógica de autenticación en `AuthContext.tsx`.
+* **`/src/hooks`**: Custom hooks (`useAuth`, `useTasks`, `useForm`) que extraen la lógica de negocio y el manejo de estado de las vistas, manteniendo los componentes de React limpios.
+* **`/src/services`**: Capa de abstracción de datos. 
+    * `/firebase`: Lógica de comunicación directa con Firestore y Firebase Auth.
+    * Se implementó un `serviceFactory.ts` que permite inyectar dependencias y cambiar fácilmente entre persistencia local y en la nube.
+* **`/src/test`**: Archivos de configuración de Vitest y pruebas unitarias aisladas (implementando una carpeta `__mocks__` en los servicios para no consumir cuota de red real durante los tests).
+
+El diseño visual es completamente **responsive**, utilizando Flexbox y CSS Grid (implementados en `App.css` e `index.css`) para adaptarse a cualquier tamaño de pantalla de manera fluida.
+
+---
+
+## 📝 Convención de Commits
+
+El historial de versiones de este repositorio sigue el estándar de **Conventional Commits** para mantener una trazabilidad semántica y ordenada. 
+
+Los commits recientes fueron estructurados focalizándose en el cumplimiento y corrección exacta de los criterios de la rúbrica de evaluación. Ejemplos de uso:
+* `feat:` para la implementación de nuevas funcionalidades (ej: *feat: integración de AWS SES en serverless function*).
+* `fix:` para la resolución de bugs (ej: *fix: corrección de reglas de seguridad en Firestore para creación de tareas*).
+* `test:` para la adición o mejora del entorno de pruebas unitarias.
+
+---
+
+## 🤖 Uso Crítico y Responsable de IA
+
+*(En esta sección, deberás redactar en tus propias palabras cómo usaste la IA para resolver problemas, como el error de Firebase o el aislamiento de los Mocks en Vitest. ¡Esta parte es tu reflexión personal!)*
+
+* **Estrategia de Uso:** ...
+* **Ejemplos de Prompts utilizados:** ...
+* **Reflexión técnica y análisis de código:** ...
