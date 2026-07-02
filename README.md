@@ -102,16 +102,69 @@ El diseño visual es completamente **responsive**, utilizando Flexbox y CSS Grid
 El historial de versiones de este repositorio sigue el estándar de **Conventional Commits** para mantener una trazabilidad semántica y ordenada. 
 
 Los commits recientes fueron estructurados focalizándose en el cumplimiento y corrección exacta de los criterios de la rúbrica de evaluación. Ejemplos de uso:
-* `feat:` para la implementación de nuevas funcionalidades (ej: *feat: integración de AWS SES en serverless function*).
-* `fix:` para la resolución de bugs (ej: *fix: corrección de reglas de seguridad en Firestore para creación de tareas*).
-* `test:` para la adición o mejora del entorno de pruebas unitarias.
+* `ejemplo 01:` para la implementación de nuevas funcionalidades (*Agrega serverless function de AWS SES*).
+* `ejemplo 02:` para la resolución con Firebase/Vercel (*CRUD y Persistencia por Usuario (Firestore)*).
 
 ---
 
+
 ## 🤖 Uso Crítico y Responsable de IA
 
-*(En esta sección, deberás redactar en tus propias palabras cómo usaste la IA para resolver problemas, como el error de Firebase o el aislamiento de los Mocks en Vitest. ¡Esta parte es tu reflexión personal!)*
+Durante el desarrollo de la aplicación, la integración de Inteligencia Artificial se gestionó bajo un enfoque analítico y estructurado, priorizando siempre la fundamentación teórica y la auditoría manual del código resultante.
 
-* **Estrategia de Uso:** ...
-* **Ejemplos de Prompts utilizados:** ...
-* **Reflexión técnica y análisis de código:** ...
+### Estrategia de Uso y Flujo de Trabajo
+Mi metodología de trabajo con la IA (tanto con modelos de lenguaje conversacionales como con el asistente Antigravity IDE) se dividió en tres fases técnicas:
+
+1. **Levantamiento de Requerimientos y Fundamentación Teórica:** El proceso comenzaba con el estudio de la base teórica proporcionada en la formación. A partir de allí, definía manualmente las especificaciones técnicas de cada módulo (por ejemplo, el ciclo de vida del componente `Login`, la gestión del estado global vs. local mediante `useState`, el control de efectos secundarios y suscripciones con `useEffect`, las redirecciones asíncronas, y el sistema de notificaciones).
+2. **Sistematización y Prompt Engineering:** En lugar de delegar la lógica, utilizaba la IA conversacional para organizar mis abstracciones. Le proporcionaba mis requerimientos técnicos detallados y le solicitaba que estructurara un *System Prompt* de alta precisión, optimizado específicamente para el motor de Antigravity IDE.
+3. **Generación y Auditoría de Código Estático:** Una vez que Antigravity procesaba el prompt y generaba la estructura del código, mi rol pasaba a ser estrictamente de revisión. Analizaba detalle por detalle la sintaxis, asegurando que el manejo de dependencias en los hooks y la integración de servicios (como Firebase) cumplieran con las buenas prácticas establecidas en la arquitectura.
+
+### Ejemplo 01: Flujo de Trabajo(Login)
+
+**Fase 1: Prompt enviado a la IA conversacional (Para estructurar ideas)**
+Para ejemplificar el punto 2, este es el tipo de instrucción inicial que le proporcionaba a la IA para organizar mis ideas antes de codificar:
+
+> "Basado en la teoría de React, necesito que me estructures un prompt técnico estricto para alimentar a Antigravity IDE. El objetivo es construir un componente de Login. Mis especificaciones son: 
+> 1. Uso de `useState` para control de formularios controlados (email/password). 
+> 2. Uso de `useEffect` para interceptar errores de Firebase y disparar notificaciones reactivas, garantizando la limpieza del efecto. 
+> 3. Implementación de redirección post-autenticación utilizando React Router. 
+> Organiza estas ideas y genérame el prompt exacto que debe ejecutar el IDE."
+
+**Fase 2: Prompt Técnico Resultante (Inyectado en Antigravity IDE)**
+A continuación, se detalla el fragmento exacto del prompt de nivel de ingeniería que fue generado a partir de mis directivas manuales, el cual inyecté en el IDE para la construcción del módulo de autenticación:
+
+```text
+Actúa como un Ingeniero de Software Senior experto en React, TypeScript y Clean Architecture. Genera el componente funcional `LoginForm.tsx` bajo los siguientes lineamientos estrictos:
+
+1. Arquitectura por Capas: Desacopla la lógica de presentación del estado global. Consume el contexto de autenticación a través del custom hook `useAuth()`.
+2. Manejo de Formularios: Utiliza abstracción de estado mediante el custom hook genérico `useForm` para gestionar los componentes controlados de `email` y `password`, asegurando tipado estricto con TypeScript.
+3. Control Reactivo de Efectos Secundarios: Implementa un `useEffect` aislado acoplado a un `useRef` para actuar como guardacantón (`isErrorDisplayed`). Este debe interceptar los cambios en el estado de error global emitido por el `AuthContext`, disparando de forma controlada la notificación asíncrona mediante `react-hot-toast` y ejecutando inmediatamente la función de limpieza `clearError()`.
+4. Composición de UI Atómica: Reutiliza de forma obligatoria los componentes atómicos puros ya existentes en el ecosistema (`Input` y `Button`), inyectando las propiedades nativas correspondientes mediante desestructuración de props.
+5. Flujo de Navegación: El componente debe recibir un callback `onSuccess` de la capa superior (`LoginPage`), delegando la ejecución imperativa de la redirección mediante la API de React Router a la página contenedora.
+
+Genera código limpio, fuertemente tipado, sin comentarios redundantes y optimizado para evitar re-renders innecesarios.
+```
+
+### Ejemplo 02: Flujo de Trabajo (Módulo de Tareas)
+
+**Fase 1: Prompt enviado a la IA conversacional (Para estructurar ideas)**
+Para organizar la arquitectura del formulario de creación de tareas antes de programar, utilicé una instrucción similar a esta:
+
+> "Basado en los principios de React, necesito estructurar un prompt técnico para Antigravity IDE. El objetivo es crear el componente `TodoForm`. Mis requisitos son: 
+> 1. El componente debe ser 'tonto' (agnóstico), es decir, no debe comunicarse con Firebase. Solo debe recibir una función `onSubmit` por props.
+> 2. Debe usar mi custom hook `useForm` para manejar el estado de título, descripción, prioridad, fecha y categoría.
+> 3. Debe incluir lógica de validación (el título debe tener mínimo 3 caracteres, y la categoría y fecha son obligatorias). 
+> Redacta el prompt exacto con lenguaje de ingeniería de software para inyectarlo en el IDE."
+
+**Fase 2: Prompt Técnico Resultante (Inyectado en Antigravity IDE)**
+A continuación, se detalla el fragmento exacto del prompt de nivel de ingeniería que la IA estructuró en base a mis directivas, el cual utilicé para autogenerar el módulo:
+
+```text
+Actúa como un Ingeniero de Software Senior experto en React, TypeScript y Clean Architecture. Genera el componente funcional `TodoForm.tsx` bajo los siguientes lineamientos estrictos:
+
+1. Principio de Responsabilidad Única (SRP): El componente debe ser estrictamente de presentación. Desacopla la lógica de persistencia de datos. Debe recibir un prop `onSubmit` de tipo `(values: TaskFormValues) => void | Promise<void>` para delegar la inserción en la base de datos al componente contenedor (`DashboardPage`).
+2. Abstracción de Estado de Formulario: Implementa el custom hook `useForm<TaskFormValues>` pasando los `initialValues` correspondientes.
+3. Reglas de Validación de Negocio: Implementa la función `validate` dentro del hook. Debe retornar un objeto de errores si: el título está vacío o tiene menos de 3 caracteres, o si `dueDate` o `category` están vacíos.
+4. Composición de Interfaz: Construye la vista utilizando exclusivamente los componentes atómicos del ecosistema (`Input`, `Select`, `Button`), mapeando correctamente los valores, handlers de cambio (`onChange`) y mensajes de error desde el hook.
+
+Genera un código declarativo, fuertemente tipado mediante las interfaces globales de TypeScript y optimizado para su integración dentro de un `Modal`.
