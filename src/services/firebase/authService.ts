@@ -64,16 +64,16 @@ export const authService = {
         values.email,
         values.password
       );
-      
+
       if (values.displayName) {
         await updateProfile(userCredential.user, {
           displayName: values.displayName,
         });
       }
-      
+
       await userCredential.user.reload();
       const updatedUser = auth.currentUser || userCredential.user;
-      
+
       return mapFirebaseUser(updatedUser);
     } catch (error) {
       throw new Error(translateAuthError(error));
@@ -87,7 +87,7 @@ export const authService = {
 
   onAuthStateChanged: (callback: (user: User | null) => void): (() => void) => {
     if (!auth) {
-      return () => {};
+      return () => { };
     }
     return firebaseOnAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {

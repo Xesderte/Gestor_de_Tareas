@@ -54,7 +54,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({
   ];
 
   return (
-    <form onSubmit={form.handleSubmit} className="todo-form">
+    <form onSubmit={form.handleSubmit} className="todo-form" noValidate>
       <Input
         label="Título"
         type="text"
