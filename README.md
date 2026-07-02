@@ -62,7 +62,7 @@ El sistema cuenta con una integración Serverless que envía un correo de bienve
 
 Para facilitar la evaluación sin necesidad de solicitar permisos o utilizar sus correos personales, he pre-verificado direcciones de **Yopmail**. Se utiliza `@yopmail.com` porque permite acceder a bandejas de entrada públicas sin requerir contraseñas ni verificación telefónica, agilizando el flujo de prueba.
 
-![Verificación de identidades en AWS SES](INSERTA_AQUI_EL_LINK_DE_TU_CAPTURA_DE_AWS)
+![Verificación de identidades en AWS SES](> <img alt="Image" width="1566" height="356" src="https://private-user-images.githubusercontent.com/106680584/616394539-1437f4c0-eb68-4e7f-884c-42c9ea45b937.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODMwMDY1ODYsIm5iZiI6MTc4MzAwNjI4NiwicGF0aCI6Ii8xMDY2ODA1ODQvNjE2Mzk0NTM5LTE0MzdmNGMwLWViNjgtNGU3Zi04ODRjLTQyYzllYTQ1YjkzNy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNzAyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDcwMlQxNTMxMjZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yNmVjODg3MmI3MzRmNTRhMWM0MzVkN2Y3ZGY0ZGJhM2E5NmJmZGVjNWNhNGUxZGVkYjAxNzM3MjM4ZGIxNjc5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.LFifqr2qQUNS6cf7J5SXtHWgkxfXSjg0um4F72VatiY">)
 
 **Pasos para probar el registro y la recepción del correo:**
 1. Ingrese a la aplicación web y diríjase a la vista de **Registro**.
